@@ -91,4 +91,6 @@ app.get("/stream/:locate/:id", async (c) => {
   }
 })
 
-Deno.serve(app.fetch)
+// Deno.serve(app.fetch)
+
+export default app
