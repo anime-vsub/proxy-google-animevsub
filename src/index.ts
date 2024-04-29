@@ -1,12 +1,8 @@
-import { Hono } from "https://deno.land/x/hono@v4.2.9/mod.ts"
-import { stream } from "https://deno.land/x/hono@v4.2.9/helper.ts"
-
-import { cors } from "https://deno.land/x/hono@v4.2.9/middleware.ts"
-import { Cache } from "https://deno.land/x/ttl_cache@v0.1.1/mod.ts"
+import { Hono } from "hono"
+import { cors } from "hono/cors"
+import { stream } from "hono/streaming"
 
 const app = new Hono()
-
-const cache = new Cache<string, unknown>(30 * 60 * 1000) // 30 minutes
 
 app.use(
   "*",
@@ -16,11 +12,10 @@ app.use(
       "https://animevsub.netlify.app",
       "http://localhost:9000",
       "http://localhost:9200",
-	  "https://example.com"
-    ]
-  })
+      "https://example.com",
+    ],
+  }),
 )
-
 
 // https://lh3/R_ISiRJ4j1U0tiEuNrFgQ3_AsFzH5MdMlh-wkah9evd5GWl06k8MALlgHmkj6l85pyfBxUXqsgWj6x91qU0NepSc7U46y9hlbLEfywoUQ1VBlMfkUR7l-JWrlG4=d
 
@@ -54,7 +49,6 @@ app.get("/stream/:locate/:id", async (c) => {
   try {
     const controller = new AbortController()
     const response = await fetch(url, { signal: controller.signal })
-
 
     if (!response.ok) {
       return c.newResponse("", response)
