@@ -45,7 +45,8 @@ app.get("/stream", async (c) => {
     return c.text("Param url is required", 408)
   }
 
-  url = new URL(url, "https://stream.googleapiscdn.com") + ""
+  if (!new URL(url, "http://localhost").hostname.endsWith("googleusercontent.com"))
+    url = new URL(url, "https://stream.googleapiscdn.com") + ""
 
   try {
     const controller = new AbortController()
@@ -55,7 +56,8 @@ app.get("/stream", async (c) => {
     })
 
     if (!response.ok) {
-      return c.newResponse("", response)
+	  console.log(response)
+      return c.newResponse(await response.text().catch(() => "Unkwnon error"), response)
     }
 
     // Set appropriate headers for streaming
@@ -89,6 +91,6 @@ app.get("/stream", async (c) => {
   }
 })
 
-// Deno.serve(app.fetch)
+if (typeof Deno !== "undefined") Deno.serve(app.fetch)
 
 export default app
