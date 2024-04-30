@@ -39,12 +39,20 @@ app.get("/resolve/:locate/:id", async (c) => {
 })
 
 app.get("/stream", async (c) => {
+  let url = c.req.query("url")
+  // https://stream.googleapiscdn.com/chunks/660d60aeec575f73bdd6a3d6/original/DBcZHSxCVjVJWyhOViUBBWxJAhsDDgIOERAIHzwICwAJBxpFBwwASG0hXSQDIAUtIDkHBxsIVzAOIAMgEgQyPC8yMURBJl8EOwQcKxRKAiAdKAsOVDkJKwcBEhoHUQsvKSwfCWgsXR82JToMMFdYJh09LUw2HSdfNhk0HQkGNFk4DgdZXA8jODUxICNZGQpZDS4VXTQWDSwiMAYSJiE7NQsSCTpcTF0vAA/video0.html
+  if (!url) {
+    return c.text("Param url is required", 408)
+  }
 
-  const url = c.req.query("url")
+  url = new URL(url, "https://stream.googleapiscdn.com") + ""
 
   try {
     const controller = new AbortController()
-    const response = await fetch(url, { signal: controller.signal })
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: { referer: "https://animevietsub.tv" },
+    })
 
     if (!response.ok) {
       return c.newResponse("", response)
