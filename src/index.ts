@@ -38,13 +38,9 @@ app.get("/resolve/:locate/:id", async (c) => {
   return c.newResponse(await response.text(), response)
 })
 
-app.get("/stream/:locate/:id", async (c) => {
-  const { locate, id } = c.req.param()
+app.get("/stream", async (c) => {
 
-  const url = new URL(
-    `/${id}`,
-    `https://${encodeURIComponent(locate)}.googleusercontent.com`,
-  )
+  const url = c.req.query("url")
 
   try {
     const controller = new AbortController()
